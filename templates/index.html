@@ -94,7 +94,7 @@
                         <span class="year">{{ item.year }}</span>
                         <span class="denomination">{{ item.denomination }}</span>
                     </div>
-                    <p class="item-description">{{ item.description|truncatewords:15 }}</p>
+                    <p class="item-description">{{ item.description|truncatewords:6 }}</p>
                     <a href="{% url 'item_detail' item.pk %}" class="view-details">
                         View Details <span class="arrow">→</span>
                     </a>
