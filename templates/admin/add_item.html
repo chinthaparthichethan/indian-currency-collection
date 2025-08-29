@@ -1,0 +1,267 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Add New Item - Admin Panel{% endblock %}
+
+{% block content %}
+<div class="admin-wrapper">
+    <div class="admin-header">
+        <div class="container">
+            <nav class="admin-breadcrumb">
+                <a href="{% url 'admin_dashboard' %}">Dashboard</a>
+                <span class="breadcrumb-separator">›</span>
+                <span class="current">Add New Item</span>
+            </nav>
+            <h1>📝 Add New Currency Item</h1>
+            <p>Create a comprehensive record of a currency item with detailed information and images</p>
+        </div>
+    </div>
+    
+    <div class="admin-content">
+        <div class="container">
+            <div class="admin-grid">
+                <div class="form-container">
+                    <form method="post" enctype="multipart/form-data" class="admin-form">
+                        {% csrf_token %}
+                        
+                        <!-- Basic Information Section -->
+                        <div class="form-section">
+                            <div class="section-header">
+                                <h3>📋 Basic Information</h3>
+                                <p>Essential details about the currency item</p>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="{{ form.title.id_for_label }}">
+                                        <span class="label-icon">📝</span>
+                                        Item Title *
+                                    </label>
+                                    {{ form.title }}
+                                    <small class="help-text">Enter a descriptive title (e.g., "Mughal Silver Rupee - Akbar Period")</small>
+                                    {% if form.title.errors %}
+                                        <div class="error-message">{{ form.title.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="{{ form.item_type.id_for_label }}">
+                                        <span class="label-icon">🏷️</span>
+                                        Item Type *
+                                    </label>
+                                    {{ form.item_type }}
+                                    <small class="help-text">Select whether this is a coin or currency note</small>
+                                    {% if form.item_type.errors %}
+                                        <div class="error-message">{{ form.item_type.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="{{ form.year.id_for_label }}">
+                                        <span class="label-icon">📅</span>
+                                        Year *
+                                    </label>
+                                    {{ form.year }}
+                                    <small class="help-text">Year of minting/printing</small>
+                                    {% if form.year.errors %}
+                                        <div class="error-message">{{ form.year.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="{{ form.denomination.id_for_label }}">
+                                        <span class="label-icon">💰</span>
+                                        Denomination *
+                                    </label>
+                                    {{ form.denomination }}
+                                    <small class="help-text">Face value (e.g., "1 Rupee", "50 Paisa")</small>
+                                    {% if form.denomination.errors %}
+                                        <div class="error-message">{{ form.denomination.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Additional Details Section -->
+                        <div class="form-section">
+                            <div class="section-header">
+                                <h3>🔍 Additional Details</h3>
+                                <p>Specific information based on item type</p>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="{{ form.material.id_for_label }}">
+                                        <span class="label-icon">⚡</span>
+                                        Material (for coins)
+                                    </label>
+                                    {{ form.material }}
+                                    <small class="help-text">Metal composition (e.g., "Silver", "Bronze", "Copper-Nickel")</small>
+                                    {% if form.material.errors %}
+                                        <div class="error-message">{{ form.material.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="{{ form.issuing_authority.id_for_label }}">
+                                        <span class="label-icon">🏛️</span>
+                                        Issuing Authority (for notes)
+                                    </label>
+                                    {{ form.issuing_authority }}
+                                    <small class="help-text">Bank or authority that issued the note</small>
+                                    {% if form.issuing_authority.errors %}
+                                        <div class="error-message">{{ form.issuing_authority.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Image Upload Section -->
+                        <div class="form-section">
+                            <div class="section-header">
+                                <h3>📸 Item Images</h3>
+                                <p>Upload high-quality images of both sides of the currency item</p>
+                            </div>
+                            
+                            <div class="image-upload-grid">
+                                <div class="form-group image-upload-group">
+                                    <label for="{{ form.front_image.id_for_label }}">
+                                        <span class="label-icon">🖼️</span>
+                                        Front View Image *
+                                    </label>
+                                    <div class="file-upload-area" id="frontUpload">
+                                        {{ form.front_image }}
+                                        <div class="upload-instructions">
+                                            <div class="upload-icon">📷</div>
+                                            <p><strong>Upload Front View</strong></p>
+                                            <small>PNG, JPG up to 10MB</small>
+                                        </div>
+                                        <div class="image-preview" id="frontPreview"></div>
+                                    </div>
+                                    {% if form.front_image.errors %}
+                                        <div class="error-message">{{ form.front_image.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="form-group image-upload-group">
+                                    <label for="{{ form.back_image.id_for_label }}">
+                                        <span class="label-icon">🖼️</span>
+                                        Back View Image *
+                                    </label>
+                                    <div class="file-upload-area" id="backUpload">
+                                        {{ form.back_image }}
+                                        <div class="upload-instructions">
+                                            <div class="upload-icon">📷</div>
+                                            <p><strong>Upload Back View</strong></p>
+                                            <small>PNG, JPG up to 10MB</small>
+                                        </div>
+                                        <div class="image-preview" id="backPreview"></div>
+                                    </div>
+                                    {% if form.back_image.errors %}
+                                        <div class="error-message">{{ form.back_image.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Description Section -->
+                        <div class="form-section">
+                            <div class="section-header">
+                                <h3>📖 Historical Description</h3>
+                                <p>Provide detailed historical context and interesting facts</p>
+                            </div>
+                            
+                            <div class="form-group full-width">
+                                <label for="{{ form.description.id_for_label }}">
+                                    <span class="label-icon">📝</span>
+                                    Detailed Description *
+                                </label>
+                                {{ form.description }}
+                                <small class="help-text">Include historical significance, notable features, rarity information, and any interesting stories</small>
+                                {% if form.description.errors %}
+                                    <div class="error-message">{{ form.description.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <!-- Form Actions -->
+                        <div class="form-actions">
+                            <button type="submit" class="btn-primary large">
+                                <span class="btn-icon">✅</span>
+                                Add to Collection
+                            </button>
+                            <a href="{% url 'admin_dashboard' %}" class="btn-secondary large">
+                                <span class="btn-icon">❌</span>
+                                Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- Help Sidebar -->
+                <div class="help-sidebar">
+                    <div class="help-card">
+                        <h3>💡 Photography Tips</h3>
+                        <ul class="tips-list">
+                            <li><strong>Lighting:</strong> Use natural daylight or soft LED lighting</li>
+                            <li><strong>Background:</strong> Plain white or neutral colored surface</li>
+                            <li><strong>Focus:</strong> Ensure all text and details are sharp</li>
+                            <li><strong>Angle:</strong> Photograph straight-on, avoid shadows</li>
+                            <li><strong>Resolution:</strong> Use highest camera setting available</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="help-card">
+                        <h3>📝 Writing Guidelines</h3>
+                        <ul class="checklist">
+                            <li>✅ Include historical period/ruler</li>
+                            <li>✅ Mention mint location if known</li>
+                            <li>✅ Describe visual elements</li>
+                            <li>✅ Note any unique features</li>
+                            <li>✅ Add rarity information</li>
+                            <li>✅ Include condition details</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="help-card quick-reference">
+                        <h3>🔗 Quick Reference</h3>
+                        <div class="reference-links">
+                            <a href="{% url 'gallery' %}" class="ref-link">View Existing Items</a>
+                            <a href="{% url 'about' %}" class="ref-link">Historical Context</a>
+                            <a href="#" class="ref-link">Authentication Guide</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Image preview functionality
+function setupImagePreview(inputId, previewId) {
+    const input = document.getElementById(inputId);
+    const preview = document.getElementById(previewId);
+    
+    input.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                preview.innerHTML = `<img src="${e.target.result}" alt="Preview" style="max-width: 100%; border-radius: 8px;">`;
+                preview.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+}
+
+// Initialize image previews
+document.addEventListener('DOMContentLoaded', function() {
+    setupImagePreview('id_front_image', 'frontPreview');
+    setupImagePreview('id_back_image', 'backPreview');
+});
+</script>
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="admin-container">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+        <h2>Admin Dashboard</h2>
+        <div>
+            <a href="{% url 'add_item' %}" class="btn-primary" style="text-decoration: none; margin-right: 1rem;">Add New Item</a>
+            <a href="{% url 'admin_logout' %}" class="btn-danger" style="text-decoration: none;">Logout</a>
+        </div>
+    </div>
+    
+    <table style="width: 100%; border-collapse: collapse;">
+        <thead>
+            <tr style="background-color: #f1f5f9;">
+                <th style="padding: 12px; text-align: left; border-bottom: 1px solid #cbd5e1;">Title</th>
+                <th style="padding: 12px; text-align: left; border-bottom: 1px solid #cbd5e1;">Type</th>
+                <th style="padding: 12px; text-align: left; border-bottom: 1px solid #cbd5e1;">Year</th>
+                <th style="padding: 12px; text-align: left; border-bottom: 1px solid #cbd5e1;">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+            <tr>
+                <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">{{ item.title }}</td>
+                <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">{{ item.get_item_type_display }}</td>
+                <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">{{ item.year }}</td>
+                <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">
+                    <a href="{% url 'edit_item' item.pk %}" style="margin-right: 10px; color: #1e3a8a;">Edit</a>
+                    <form method="post" action="{% url 'delete_item' item.pk %}" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn-danger" onclick="return confirm('Are you sure?')">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4" style="padding: 20px; text-align: center;">No items found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

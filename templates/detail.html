@@ -1,0 +1,164 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ item.title }} - Indian Currency Collection{% endblock %}
+
+{% block content %}
+<section class="item-detail-hero">
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="{% url 'home' %}">Home</a>
+            <span class="separator">›</span>
+            <a href="{% url 'gallery' %}">Gallery</a>
+            <span class="separator">›</span>
+            <span class="current">{{ item.title }}</span>
+        </nav>
+    </div>
+</section>
+
+<section class="item-detail-content">
+    <div class="container">
+        <div class="detail-grid">
+            <!-- Image Gallery Section -->
+            <div class="image-gallery">
+    <div class="main-image-container">
+        {% if item.front_image %}
+            <img src="{{ item.front_image.url }}" alt="{{ item.title }} - Front" id="mainImage" class="main-image">
+        {% elif item.image %}
+            <img src="{{ item.image.url }}" alt="{{ item.title }}" id="mainImage" class="main-image">
+        {% else %}
+            <div class="placeholder-image-large">
+                <span class="placeholder-icon-large">📷</span>
+                <span class="placeholder-text-large">No Image Available</span>
+            </div>
+        {% endif %}
+        
+        {% if item.front_image or item.back_image %}
+        <div class="image-labels">
+            {% if item.front_image %}
+                <span class="image-label active" id="frontLabel">Front View</span>
+            {% endif %}
+            {% if item.back_image %}
+                <span class="image-label" id="backLabel">Back View</span>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+    
+    <div class="thumbnail-gallery">
+        {% if item.front_image %}
+        <div class="thumbnail active" onclick="switchImage('{{ item.front_image.url }}', 'front')">
+            <img src="{{ item.front_image.url }}" alt="Front view">
+            <span class="thumb-label">Front</span>
+        </div>
+        {% endif %}
+        
+        {% if item.back_image %}
+        <div class="thumbnail" onclick="switchImage('{{ item.back_image.url }}', 'back')">
+            <img src="{{ item.back_image.url }}" alt="Back view">
+            <span class="thumb-label">Back</span>
+        </div>
+        {% endif %}
+        
+        {% if item.image and not item.front_image %}
+        <div class="thumbnail active">
+            <img src="{{ item.image.url }}" alt="Legacy image">
+            <span class="thumb-label">Image</span>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+            
+            <!-- Item Information Section -->
+            <div class="item-info">
+                <div class="item-header">
+                    <h1>{{ item.title }}</h1>
+                    <div class="item-badges">
+                        <span class="type-badge {{ item.item_type }}">
+                            {% if item.item_type == 'coin' %}🪙{% else %}💵{% endif %}
+                            {{ item.get_item_type_display }}
+                        </span>
+                        <span class="year-badge">{{ item.year }}</span>
+                    </div>
+                </div>
+                
+                <div class="specifications">
+                    <h3>📋 Specifications</h3>
+                    <div class="spec-grid">
+                        <div class="spec-item">
+                            <span class="spec-label">Denomination</span>
+                            <span class="spec-value">{{ item.denomination }}</span>
+                        </div>
+                        
+                        <div class="spec-item">
+                            <span class="spec-label">Year</span>
+                            <span class="spec-value">{{ item.year }}</span>
+                        </div>
+                        
+                        {% if item.material %}
+                        <div class="spec-item">
+                            <span class="spec-label">Material</span>
+                            <span class="spec-value">{{ item.material }}</span>
+                        </div>
+                        {% endif %}
+                        
+                        {% if item.issuing_authority %}
+                        <div class="spec-item">
+                            <span class="spec-label">Issuing Authority</span>
+                            <span class="spec-value">{{ item.issuing_authority }}</span>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="description">
+                    <h3>📖 Historical Background</h3>
+                    <div class="description-content">
+                        {{ item.description|linebreaks }}
+                    </div>
+                </div>
+                
+                <div class="item-actions">
+                    <a href="{% url 'gallery' %}" class="action-btn secondary">
+                        <span class="btn-icon">← </span>
+                        Back to Gallery
+                    </a>
+                    <button onclick="shareItem()" class="action-btn primary">
+                        <span class="btn-icon">📤</span>
+                        Share Item
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+function switchImage(imageUrl, view) {
+    document.getElementById('mainImage').src = imageUrl;
+    
+    // Update active states
+    document.querySelectorAll('.thumbnail').forEach(thumb => thumb.classList.remove('active'));
+    document.querySelectorAll('.image-label').forEach(label => label.classList.remove('active'));
+    
+    event.currentTarget.classList.add('active');
+    document.getElementById(view + 'Label').classList.add('active');
+}
+
+function shareItem() {
+    if (navigator.share) {
+        navigator.share({
+            title: '{{ item.title }}',
+            text: '{{ item.description|truncatewords:20 }}',
+            url: window.location.href
+        });
+    } else {
+        // Fallback: copy URL to clipboard
+        navigator.clipboard.writeText(window.location.href).then(() => {
+            alert('Link copied to clipboard!');
+        });
+    }
+}
+</script>
+{% endblock %}

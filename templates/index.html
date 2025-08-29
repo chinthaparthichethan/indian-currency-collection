@@ -1,0 +1,198 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero">
+    <div class="hero-content">
+        <div class="hero-badge">Preserving History Since Ancient Times</div>
+        <h1>Discover the Rich Heritage of <span class="highlight">Indian Currency</span></h1>
+        <p>Journey through millennia of monetary evolution with our curated collection of historical Indian coins and currency notes, from ancient punch-marked coins to modern commemoratives.</p>
+        <div class="hero-buttons">
+            <a href="{% url 'gallery' %}" class="cta-button primary">Explore Collection</a>
+            <a href="{% url 'about' %}" class="cta-button secondary">Learn More</a>
+        </div>
+        <div class="hero-stats">
+            <div class="stat">
+                <span class="stat-number">{{ latest_items|length }}+</span>
+                <span class="stat-label">Historical Pieces</span>
+            </div>
+            <div class="stat">
+                <span class="stat-number">2000+</span>
+                <span class="stat-label">Years Covered</span>
+            </div>
+            <div class="stat">
+                <span class="stat-number">50+</span>
+                <span class="stat-label">Ruling Dynasties</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Collection Highlights -->
+<!-- <section class="collection-highlights">
+    <div class="container">
+        <div class="section-header">
+            <h2>Collection Highlights</h2>
+            <p>Explore the most significant pieces from our extensive collection</p>
+        </div>
+        
+        <div class="highlight-categories">
+            <div class="category-card">
+                <div class="category-icon">🪙</div>
+                <h3>Ancient Coins</h3>
+                <p>Punch-marked coins from the 6th century BCE, showcasing the earliest monetary systems of the Indian subcontinent.</p>
+            </div>
+            <div class="category-card">
+                <div class="category-icon">👑</div>
+                <h3>Mughal Treasury</h3>
+                <p>Exquisite gold mohurs and silver rupees bearing the names and portraits of great Mughal emperors.</p>
+            </div>
+            <div class="category-card">
+                <div class="category-icon">🏛️</div>
+                <h3>Colonial Era</h3>
+                <p>British Indian currency including the iconic Victoria and George series coins and early paper money.</p>
+            </div>
+            <div class="category-card">
+                <div class="category-icon">🇮🇳</div>
+                <h3>Independent India</h3>
+                <p>Post-1947 currency featuring national symbols, commemorative issues, and modern security features.</p>
+            </div>
+        </div>
+    </div>
+</section> -->
+
+<!-- Featured Items -->
+<section class="featured-items">
+    <div class="container">
+        <div class="section-header">
+            <h2>Featured Treasures</h2>
+            <p>Recently added and most sought-after pieces from our collection</p>
+        </div>
+        
+        <div class="items-carousel">
+            {% for item in latest_items|slice:":4" %}
+            <div class="featured-card">
+                <div class="card-image">
+                    {% if item.front_image %}
+                        <img src="{{ item.front_image.url }}" alt="{{ item.title }} - Front">
+                    {% elif item.image %}
+                        <img src="{{ item.image.url }}" alt="{{ item.title }}">
+                    {% else %}
+                        <div class="placeholder-image">
+                            <span class="placeholder-icon">📷</span>
+                            <span class="placeholder-text">No Image Available</span>
+                        </div>
+                    {% endif %}
+                    <div class="card-overlay">
+                        <span class="item-type">{{ item.get_item_type_display }}</span>
+                    </div>
+                </div>
+                <div class="card-content">
+                    <h3>{{ item.title }}</h3>
+                    <div class="item-meta">
+                        <span class="year">{{ item.year }}</span>
+                        <span class="denomination">{{ item.denomination }}</span>
+                    </div>
+                    <p class="item-description">{{ item.description|truncatewords:15 }}</p>
+                    <a href="{% url 'item_detail' item.pk %}" class="view-details">
+                        View Details <span class="arrow">→</span>
+                    </a>
+                </div>
+            </div>
+            {% empty %}
+            <div class="no-items-message">
+                <div class="no-items-icon">📚</div>
+                <h3>Collection Coming Soon</h3>
+                <p>We're currently adding items to our collection. Check back soon for amazing historical currency pieces!</p>
+                <a href="{% url 'admin_login' %}" class="cta-button primary">Add Items</a>
+            </div>
+            {% endfor %}
+        </div>
+        
+        {% if latest_items %}
+        <div class="view-all-section">
+            <a href="{% url 'gallery' %}" class="view-all-button">View Complete Collection</a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Why Choose Us -->
+<section class="why-choose-us">
+    <div class="container">
+        <div class="content-grid">
+            <div class="content-text">
+                <h2>Why Our Collection Matters</h2>
+                <p>Currency tells the story of civilizations, and our collection preserves these stories for future generations. Each piece represents a unique moment in India's rich history.</p>
+                
+                <div class="features-list">
+                    <div class="feature">
+                        <div class="feature-icon"></div>
+                        <div class="feature-content">
+                            <h4>Authenticated Pieces</h4>
+                            <p>Every item is carefully verified by our expert numismatists</p>
+                        </div>
+                    </div>
+                    <div class="feature">
+                        <div class="feature-icon"></div>
+                        <div class="feature-content">
+                            <h4>Historical Context</h4>
+                            <p>Detailed descriptions provide rich historical background</p>
+                        </div>
+                    </div>
+                    <div class="feature">
+                        <div class="feature-icon"></div>
+                        <div class="feature-content">
+                            <h4>High-Quality Images</h4>
+                            <p>Professional photography captures every detail</p>
+                        </div>
+                    </div>
+                    <div class="feature">
+                        <div class="feature-icon"></div>
+                        <div class="feature-content">
+                            <h4>Educational Value</h4>
+                            <p>Perfect resource for students and researchers</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="content-visual">
+                <div class="visual-card">
+                    <h3>Start Your Journey</h3>
+                    <p>Explore thousands of years of Indian monetary history through our carefully curated collection.</p>
+                    <div class="journey-steps">
+                        <div class="step">
+                            <span class="step-number">1</span>
+                            <span class="step-text">Browse Gallery</span>
+                        </div>
+                        <div class="step">
+                            <span class="step-number">2</span>
+                            <span class="step-text">Learn History</span>
+                        </div>
+                        <div class="step">
+                            <span class="step-number">3</span>
+                            <span class="step-text">Discover Stories</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action -->
+<section class="cta-section">
+    <div class="container">
+        <div class="cta-content">
+            <h2>Ready to Explore Indian Currency History?</h2>
+            <p>Join thousands of history enthusiasts who have discovered the fascinating world of Indian numismatics</p>
+            <div class="cta-buttons">
+                <a href="{% url 'gallery' %}" class="cta-button primary large">Start Exploring</a>
+                <a href="{% url 'contact' %}" class="cta-button secondary large">Get In Touch</a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,323 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Edit Item - Admin Panel{% endblock %}
+
+{% block content %}
+<div class="admin-wrapper">
+    <div class="admin-header">
+        <div class="container">
+            <nav class="admin-breadcrumb">
+                <a href="{% url 'admin_dashboard' %}">Dashboard</a>
+                <span class="breadcrumb-separator">›</span>
+                <span class="current">Edit Item</span>
+            </nav>
+            <h1>✏️ Edit Currency Item</h1>
+            <p>Update the details of "{{ item.title }}"</p>
+        </div>
+    </div>
+    
+    <div class="admin-content">
+        <div class="container">
+            <div class="admin-grid">
+                <div class="form-container">
+                    <form method="post" enctype="multipart/form-data" class="admin-form">
+                        {% csrf_token %}
+                        
+                        <!-- Basic Information Section -->
+                        <div class="form-section">
+                            <div class="section-header">
+                                <h3>📋 Basic Information</h3>
+                                <p>Essential details about the currency item</p>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="{{ form.title.id_for_label }}">
+                                        <span class="label-icon">📝</span>
+                                        Item Title *
+                                    </label>
+                                    {{ form.title }}
+                                    <small class="help-text">Enter a descriptive title</small>
+                                    {% if form.title.errors %}
+                                        <div class="error-message">{{ form.title.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="{{ form.item_type.id_for_label }}">
+                                        <span class="label-icon">🏷️</span>
+                                        Item Type *
+                                    </label>
+                                    {{ form.item_type }}
+                                    <small class="help-text">Select whether this is a coin or currency note</small>
+                                    {% if form.item_type.errors %}
+                                        <div class="error-message">{{ form.item_type.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="{{ form.year.id_for_label }}">
+                                        <span class="label-icon">📅</span>
+                                        Year *
+                                    </label>
+                                    {{ form.year }}
+                                    <small class="help-text">Year of minting/printing</small>
+                                    {% if form.year.errors %}
+                                        <div class="error-message">{{ form.year.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="{{ form.denomination.id_for_label }}">
+                                        <span class="label-icon">💰</span>
+                                        Denomination *
+                                    </label>
+                                    {{ form.denomination }}
+                                    <small class="help-text">Face value (e.g., "1 Rupee", "50 Paisa")</small>
+                                    {% if form.denomination.errors %}
+                                        <div class="error-message">{{ form.denomination.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Additional Details Section -->
+                        <div class="form-section">
+                            <div class="section-header">
+                                <h3>🔍 Additional Details</h3>
+                                <p>Specific information based on item type</p>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="{{ form.material.id_for_label }}">
+                                        <span class="label-icon">⚡</span>
+                                        Material (for coins)
+                                    </label>
+                                    {{ form.material }}
+                                    <small class="help-text">Metal composition</small>
+                                    {% if form.material.errors %}
+                                        <div class="error-message">{{ form.material.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="{{ form.issuing_authority.id_for_label }}">
+                                        <span class="label-icon">🏛️</span>
+                                        Issuing Authority (for notes)
+                                    </label>
+                                    {{ form.issuing_authority }}
+                                    <small class="help-text">Bank or authority that issued the note</small>
+                                    {% if form.issuing_authority.errors %}
+                                        <div class="error-message">{{ form.issuing_authority.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Current Images Display -->
+                        <div class="form-section">
+                            <div class="section-header">
+                                <h3>🖼️ Current Images</h3>
+                                <p>Currently uploaded images for this item</p>
+                            </div>
+                            
+                            <div class="current-images-grid">
+                                {% if item.front_image %}
+                                <div class="current-image-card">
+                                    <img src="{{ item.front_image.url }}" alt="Current front image">
+                                    <div class="image-label">Front View</div>
+                                </div>
+                                {% endif %}
+                                
+                                {% if item.back_image %}
+                                <div class="current-image-card">
+                                    <img src="{{ item.back_image.url }}" alt="Current back image">
+                                    <div class="image-label">Back View</div>
+                                </div>
+                                {% endif %}
+                                
+                                {% if item.image and not item.front_image %}
+                                <div class="current-image-card">
+                                    <img src="{{ item.image.url }}" alt="Current image">
+                                    <div class="image-label">Legacy Image</div>
+                                </div>
+                                {% endif %}
+                                
+                                {% if not item.front_image and not item.back_image and not item.image %}
+                                <div class="no-current-images">
+                                    <span class="no-image-icon">📷</span>
+                                    <p>No images currently uploaded</p>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <!-- Image Upload Section -->
+                        <div class="form-section">
+                            <div class="section-header">
+                                <h3>📸 Update Images</h3>
+                                <p>Upload new images to replace existing ones (leave blank to keep current images)</p>
+                            </div>
+                            
+                            <div class="image-upload-grid">
+                                <div class="form-group image-upload-group">
+                                    <label for="{{ form.front_image.id_for_label }}">
+                                        <span class="label-icon">🖼️</span>
+                                        Front View Image
+                                    </label>
+                                    <div class="file-upload-area" id="frontUpload">
+                                        {{ form.front_image }}
+                                        <div class="upload-instructions">
+                                            <div class="upload-icon">📷</div>
+                                            <p><strong>Upload New Front View</strong></p>
+                                            <small>PNG, JPG up to 10MB (optional)</small>
+                                        </div>
+                                        <div class="image-preview" id="frontPreview"></div>
+                                    </div>
+                                    {% if form.front_image.errors %}
+                                        <div class="error-message">{{ form.front_image.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="form-group image-upload-group">
+                                    <label for="{{ form.back_image.id_for_label }}">
+                                        <span class="label-icon">🖼️</span>
+                                        Back View Image
+                                    </label>
+                                    <div class="file-upload-area" id="backUpload">
+                                        {{ form.back_image }}
+                                        <div class="upload-instructions">
+                                            <div class="upload-icon">📷</div>
+                                            <p><strong>Upload New Back View</strong></p>
+                                            <small>PNG, JPG up to 10MB (optional)</small>
+                                        </div>
+                                        <div class="image-preview" id="backPreview"></div>
+                                    </div>
+                                    {% if form.back_image.errors %}
+                                        <div class="error-message">{{ form.back_image.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Description Section -->
+                        <div class="form-section">
+                            <div class="section-header">
+                                <h3>📖 Historical Description</h3>
+                                <p>Update the detailed historical context and information</p>
+                            </div>
+                            
+                            <div class="form-group full-width">
+                                <label for="{{ form.description.id_for_label }}">
+                                    <span class="label-icon">📝</span>
+                                    Detailed Description *
+                                </label>
+                                {{ form.description }}
+                                <small class="help-text">Include historical significance, notable features, and interesting facts</small>
+                                {% if form.description.errors %}
+                                    <div class="error-message">{{ form.description.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <!-- Form Actions -->
+                        <div class="form-actions">
+                            <button type="submit" class="btn-primary large">
+                                <span class="btn-icon">💾</span>
+                                Update Item
+                            </button>
+                            <a href="{% url 'admin_dashboard' %}" class="btn-secondary large">
+                                <span class="btn-icon">❌</span>
+                                Cancel
+                            </a>
+                            <a href="{% url 'item_detail' item.pk %}" class="btn-info large">
+                                <span class="btn-icon">👁️</span>
+                                Preview Item
+                            </a>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- Help Sidebar -->
+                <div class="help-sidebar">
+                    <div class="help-card">
+                        <h3>ℹ️ Edit Item Tips</h3>
+                        <ul class="tips-list">
+                            <li><strong>Images:</strong> Leave image fields blank to keep existing images</li>
+                            <li><strong>Updates:</strong> Changes are saved immediately upon submission</li>
+                            <li><strong>Preview:</strong> Use the preview button to see how changes look</li>
+                            <li><strong>History:</strong> Consider the impact of changes on historical accuracy</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="help-card">
+                        <h3>🎯 Quick Actions</h3>
+                        <div class="quick-actions">
+                            <a href="{% url 'item_detail' item.pk %}" class="quick-action-btn">
+                                <span class="action-icon">👁️</span>
+                                View Item
+                            </a>
+                            <a href="{% url 'admin_dashboard' %}" class="quick-action-btn">
+                                <span class="action-icon">📊</span>
+                                Dashboard
+                            </a>
+                            <a href="{% url 'add_item' %}" class="quick-action-btn">
+                                <span class="action-icon">➕</span>
+                                Add New
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="help-card item-stats">
+                        <h3>📈 Item Stats</h3>
+                        <div class="stat-item">
+                            <span class="stat-label">Created:</span>
+                            <span class="stat-value">{{ item.created_at|date:"M d, Y" }}</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Last Updated:</span>
+                            <span class="stat-value">{{ item.updated_at|date:"M d, Y" }}</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">ID:</span>
+                            <span class="stat-value">#{{ item.id }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Image preview functionality
+function setupImagePreview(inputId, previewId) {
+    const input = document.getElementById(inputId);
+    const preview = document.getElementById(previewId);
+    
+    if (input && preview) {
+        input.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.innerHTML = `<img src="${e.target.result}" alt="Preview" style="max-width: 100%; border-radius: 8px;">`;
+                    preview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+}
+
+// Initialize image previews
+document.addEventListener('DOMContentLoaded', function() {
+    setupImagePreview('id_front_image', 'frontPreview');
+    setupImagePreview('id_back_image', 'backPreview');
+});
+</script>
+{% endblock %}

@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Gallery - Indian Currency Collection{% endblock %}
+
+{% block content %}
+<section class="gallery-hero">
+    <div class="container">
+        <h1>Currency Collection Gallery</h1>
+        <p class="gallery-subtitle">Explore our extensive collection of historical Indian coins and currency notes</p>
+    </div>
+</section>
+
+<section class="gallery-content">
+    <div class="container">
+        <!-- Filter Section -->
+        <div class="filter-section">
+            <div class="filter-header">
+                <h3>Filter Collection</h3>
+                <p>Find exactly what you're looking for</p>
+            </div>
+            <form method="get" class="modern-filter-form">
+                <div class="filter-grid">
+                    <div class="filter-group">
+                        <label>Search</label>
+                        {{ form.search }}
+                    </div>
+                    <div class="filter-group">
+                        <label>Type</label>
+                        {{ form.item_type }}
+                    </div>
+                    <div class="filter-group">
+                        <label>From Year</label>
+                        {{ form.year_from }}
+                    </div>
+                    <div class="filter-group">
+                        <label>To Year</label>
+                        {{ form.year_to }}
+                    </div>
+                </div>
+                <div class="filter-actions">
+                    <button type="submit" class="filter-btn apply-btn">
+                        <span class="btn-icon"></span>
+                        Apply Filters
+                    </button>
+                    <a href="{% url 'gallery' %}" class="filter-btn clear-btn">
+                        <span class="btn-icon"></span>
+                        Clear All
+                    </a>
+                </div>
+            </form>
+        </div>
+        
+        <!-- Results Summary -->
+        <div class="results-summary">
+            <h2>Collection Items</h2>
+            <p class="results-count">{{ items|length }} item{{ items|length|pluralize }} found</p>
+        </div>
+        
+        <!-- Items Grid -->
+        <div class="currency-grid" >
+            {% for item in items %}
+            <div class="featured-card">
+                <div class="card-image">
+                    {% if item.front_image %}
+                        <img src="{{ item.front_image.url }}" alt="{{ item.title }} - Front">
+                    {% elif item.image %}
+                        <img src="{{ item.image.url }}" alt="{{ item.title }}">
+                    {% else %}
+                        <div class="placeholder-image">
+                            <span class="placeholder-icon">📷</span>
+                            <span class="placeholder-text">No Image Available</span>
+                        </div>
+                    {% endif %}
+                    <div class="card-overlay">
+                        <span class="item-type">{{ item.get_item_type_display }}</span>
+                    </div>
+                </div>
+                <div class="card-content">
+                    <h3>{{ item.title }}</h3>
+                    <div class="item-meta">
+                        <span class="year">{{ item.year }}</span>
+                        <span class="denomination">{{ item.denomination }}</span>
+                    </div>
+                    <!-- <p class="item-description">{{ item.description|truncatewords:6 }}</p> -->
+                    <a href="{% url 'item_detail' item.pk %}" class="view-details">
+                        View Details <span class="arrow">→</span>
+                    </a>
+                </div>
+            </div>
+            {% empty %}
+            <div class="no-items-state">
+                <div class="no-items-icon"></div>
+                <h3>No Items Found</h3>
+                <p>Try adjusting your search criteria or browse all items.</p>
+                <a href="{% url 'gallery' %}" class="reset-btn">View All Items</a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}
