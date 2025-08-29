@@ -49,14 +49,14 @@
         {% if item.front_image %}
         <div class="thumbnail active" onclick="switchImage('{{ item.front_image.url }}', 'front')">
             <img src="{{ item.front_image.url }}" alt="Front view">
-            <span class="thumb-label">Front</span>
+            <span class="thumb-label"></span>
         </div>
         {% endif %}
         
         {% if item.back_image %}
         <div class="thumbnail" onclick="switchImage('{{ item.back_image.url }}', 'back')">
             <img src="{{ item.back_image.url }}" alt="Back view">
-            <span class="thumb-label">Back</span>
+            <span class="thumb-label"></span>
         </div>
         {% endif %}
         
